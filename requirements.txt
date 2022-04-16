@@ -1,4 +1,5 @@
 pytelegrambotapi
 pandas
-mysql-connector
+mysql-connector==2.2.9
+mysql-connector-python==8.0.28
 schedule
