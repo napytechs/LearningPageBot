@@ -3,12 +3,14 @@ import os
 
 def connection():
     conn = connector.connect(
-            host=os.getenv('host'),
+            port=os.getenv('port'),
             password=os.getenv('pwd'),
             user=os.getenv('user'),
-            database=os.getenv('database')
+            database=os.getenv('database'),
+            host=os.getenv('host')
         )
     cur = conn.cursor(buffered=True)
+    print("Your connection is", conn)
     try:
         conn.connect()
         conn.autocommit = True
