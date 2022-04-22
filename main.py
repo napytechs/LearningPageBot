@@ -4,7 +4,7 @@ import re
 import generator
 import pandas as pd
 from text import *
-from buttons import *
+#from buttons import *
 from database import *
 from typing import  Union
 import schedule
