@@ -3,11 +3,11 @@ import os
 
 def connection():
     conn = connector.connect(
-            port=os.getenv('port'),
-            password=os.getenv('pwd'),
-            user=os.getenv('user'),
-            database=os.getenv('database'),
-            host=os.getenv('host')
+           
+            password="hBBIub9sCXVdFnDk0bo8",
+            user="root",
+            database="railway",
+            host="containers-us-west-38.railway.app"
         )
     cur = conn.cursor(buffered=True)
     print("Your connection is", conn)
