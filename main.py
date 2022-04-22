@@ -32,7 +32,7 @@ db = PrivateDatabase()
 conn, cur = connection()
 ADMIN_ID = os.getenv('admin_id')
 CHANNEL_ID = os.getenv('channel_id')
-TOKEN = os.getenv("bot_token")
+TOKEN = os.getenv("TOKEN)
 
 bot = TeleBot(TOKEN)
 
