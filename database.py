@@ -11,11 +11,11 @@ def connection():
         )
     cur = conn.cursor(buffered=True)
     print("Your connection is", conn)
-    try:
-        conn.connect()
-        conn.autocommit = True
-    finally:
-        return conn, cur
+    #try:
+    #    conn.connect()
+    #    conn.autocommit = True
+    #finally:
+    return conn, cur
 
 class PrivateDatabase:
     def __init__(self):
