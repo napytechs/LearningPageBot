@@ -66,6 +66,7 @@ class OnMessage(StatesGroup):
 @bot.message_handler(commands=['start'], chat_types=['private'], is_deeplink=False, joined=True, not_banned=True)
 def start_message(msg):
     user_id = msg.chat.id
+    print(user_id)
     date = time()
     inv_link = generator.invite_link(user_id)
     lang = 'empity'
