@@ -4,18 +4,19 @@ import os
 def connection():
     conn = connector.connect(
            
-            password="hBBIub9sCXVdFnDk0bo8",
-            user="root",
-            database="railway",
-            host="containers-us-west-38.railway.app"
+            password=os.getenv('pwd'),
+            user=os.getenv('user'),
+            database=os.getenv('database'),
+            host=os.getenv('host'),
+            post=os.getenv('post')
         )
     cur = conn.cursor(buffered=True)
     print("Your connection is", conn)
-    #try:
-    #    conn.connect()
-    #    conn.autocommit = True
-    #finally:
-    return conn, cur
+    try:
+        conn.connect()
+        conn.autocommit = True
+    finally:
+        return conn, cur
 
 class PrivateDatabase:
     def __init__(self):
