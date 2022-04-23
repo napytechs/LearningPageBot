@@ -33,6 +33,7 @@ class PrivateDatabase:
                         (grade, i, s, 0, 0))
                         self.conn.commit()
                         
+                        
                 
     def user_is_not_exist(self, user_id):
         self.cur.execute("SELECT user_id FROM students")
