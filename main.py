@@ -4,7 +4,7 @@ import re
 import generator
 import pandas as pd
 from text import *
-#from buttons import *
+from buttons import *
 from database import *
 from typing import  Union
 import schedule
@@ -32,7 +32,7 @@ db = PrivateDatabase()
 conn, cur = connection()
 ADMIN_ID = os.getenv('admin_id')
 CHANNEL_ID = os.getenv('channel_id')
-TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("bot_token")
 
 bot = TeleBot(TOKEN)
 
