@@ -10,7 +10,7 @@ def connection():
             host=os.getenv('host'),
             port=6201
         )
-    print("Your connection is", conn)
+    #print("Your connection is", conn)
     try:
         conn.connect()
         conn.autocommit = True
