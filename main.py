@@ -30,7 +30,7 @@ apihelper.ENABLE_MIDDLEWARE = True
 
 db = PrivateDatabase()
 conn, cur = connection()
-ADMIN_ID = os.getenv('admin_id')
+ADMIN_ID = 5213764043
 CHANNEL_ID = os.getenv('channel_id')
 TOKEN = os.getenv("bot_token")
 
