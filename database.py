@@ -8,7 +8,7 @@ def connection():
             user=os.getenv('user'),
             database=os.getenv('database'),
             host=os.getenv('host'),
-            post=os.getenv('port')
+            port=os.getenv('port')
         )
     cur = conn.cursor(buffered=True)
     print("Your connection is", conn)
