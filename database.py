@@ -16,9 +16,9 @@ def connection():
         conn.autocommit = True
         cur = conn.cursor(buffered=True)
     except:
-        conn.reconnect()
+        raise
     
-    finally:
+    else:
         return conn, cur
 
 class PrivateDatabase:
