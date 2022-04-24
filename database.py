@@ -10,11 +10,11 @@ def connection():
             host=os.getenv('host'),
             port=6201
         )
-    #print("Your connection is", conn)
+    cur = conn.cursor(buffered=True)
     try:
         conn.connect()
         conn.autocommit = True
-        cur = conn.cursor(buffered=True)
+        
     except:
         raise
     
