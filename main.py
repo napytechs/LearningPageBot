@@ -588,8 +588,9 @@ def channel_text():
         channels = cur.fetchone()[0]
     except:
         channels = '{}'
+    print(channels)
     channels = json.loads(channels)
-    chan = [bot.get_chat(c) for c in channels]
+    chan = [bot.get_chat(c) for c in channels if c]
     ch = [c.username for c in chan]
     chan = '\n'.join(ch)
     key = [key for key, val in channels.items()]
