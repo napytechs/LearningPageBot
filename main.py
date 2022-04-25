@@ -332,7 +332,7 @@ def amharic_button(msg: types.Message):
 
     elif msg.text == "👨‍👩‍👦‍👦 ጋብዝ":
         cur.execute('''
-SELECT invitation_link, invites, balance, bbalance withdraw FROM students JOIN bot_setting WHERE user_id = %s''',
+SELECT invitation_link, invites, balance, bbalance, withdraw FROM students JOIN bot_setting WHERE user_id = %s''',
                            (user_id,))
         link, invites, balance, withdr, bbl = cur.fetchone()
         bot.send_message(user_id, BalanceText['am'].format(balance, invites, withdr, bbl, DEEPLINK+link),
