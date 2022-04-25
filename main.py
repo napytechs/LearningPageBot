@@ -606,7 +606,8 @@ def admin_text():
     except:
         admins = '{}'
     admins = json.loads(admins)
-    ad = [bot.get_chat(c).first_name for c in admins]
+    ad = [bot.get_chat(c) for c in admins]
+    ad = [chaneel.first_name for channel in ad]
     ad = '\n'.join(ad)
     key = [bot.get_chat(key) for key in admins]
 
