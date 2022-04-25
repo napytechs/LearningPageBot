@@ -63,9 +63,6 @@ class OnMessage(StatesGroup):
     reply = State()
     to_user = State()
 
-@bot.middleware_handler(update_types=['message'])
-def any_message(bot_ins, msg):
-    print(msg)
     
 @bot.message_handler(commands=['start'], chat_types=['private'], is_deeplink=False, joined=True, not_banned=True)
 def start_message(msg):
@@ -2226,7 +2223,6 @@ def main():
     t1 = threading.Thread(target=forever)
     t1.start()
     bot.infinity_polling()
-    print("Poling started......")
-if __name__ == "__main__":
-    
+  
+if __name__ == "__main__":  
     main()
