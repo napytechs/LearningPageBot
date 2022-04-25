@@ -63,6 +63,10 @@ class OnMessage(StatesGroup):
     reply = State()
     to_user = State()
 
+@bot.middleware_handler(update_types=['message'])
+def any_message(bot_ins, msg):
+    print(msg)
+    
 @bot.message_handler(commands=['start'], chat_types=['private'], is_deeplink=False, joined=True, not_banned=True)
 def start_message(msg):
     user_id = msg.chat.id
