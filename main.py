@@ -66,7 +66,6 @@ class OnMessage(StatesGroup):
 @bot.message_handler(commands=['start'], chat_types=['private'], is_deeplink=False, joined=True, not_banned=True)
 def start_message(msg):
     user_id = msg.chat.id
-    print(user_id)
     date = time()
     inv_link = generator.invite_link(user_id)
     lang = 'empity'
@@ -2223,7 +2222,7 @@ def main():
     t1 = threading.Thread(target=forever)
     t1.start()
     bot.infinity_polling()
-    
-if __name__ == "__main__":
     print("Poling started......")
+if __name__ == "__main__":
+    
     main()
