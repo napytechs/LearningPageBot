@@ -7,7 +7,7 @@ def connection():
             password=os.getenv('pwd'),
             user=os.getenv('user'),
             database=os.getenv('database'),
-            host=os.getenv('host'),
+            host='containers-us-west-38.railway.app',
             port=6201
         )
     cur = conn.cursor(buffered=True)
