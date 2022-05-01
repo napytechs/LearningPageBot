@@ -8,7 +8,7 @@ def connection():
             user=os.getenv('user'),
             database=os.getenv('database'),
             host='containers-us-west-38.railway.app',
-            port=6201
+            port=5776
         )
     cur = conn.cursor(buffered=True)
     try:
