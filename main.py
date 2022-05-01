@@ -31,7 +31,7 @@ apihelper.ENABLE_MIDDLEWARE = True
 db = PrivateDatabase()
 conn, cur = connection()
 ADMIN_ID = 5213764043
-CHANNEL_ID = int(os.getenv('channel_id'))
+CHANNEL_ID = -1001793167733
 TOKEN = os.getenv("bot_token")
 
 bot = TeleBot(TOKEN)
