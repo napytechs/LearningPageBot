@@ -347,7 +347,7 @@ SELECT invitation_link, invites, balance, bbalance, withdraw FROM students JOIN 
         bot.send_message(user_id, SettingText.format(first_name, gender, phone, username, bio, tp(time(), joined_date)),
                          parse_mode="HTML", reply_markup=user_setting('am'))
 
-    elif msg.text == "🗣 ጥያቄ ጥይቅ":
+    elif msg.text == "🗣 ጥያቄ ጠይቅ":
         bot.send_message(user_id, "<code>ጥያቄዎትን በጽሁፍ ፣ በድምጽ ወይም በምስል (Video,Photo) ይላኩ።</code>",
                          reply_markup=cancel(lang), parse_mode="html")
         bot.set_state(user_id, AskQuestion.question)
