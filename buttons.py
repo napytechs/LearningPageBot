@@ -245,7 +245,7 @@ def subject_btn(lang):
     return all_btn
 
 def amounts(lang):
-    all_btn = types.InlineKeyboardMarkup(row_width=5)
+    all_btn = types.InlineKeyboardMarkup(row_width=2)
     _5=types.InlineKeyboardButton(text="5 Birr",callback_data='5-birr')
     _10=types.InlineKeyboardButton(text="10 Birr",callback_data='10-birr')
     _15=types.InlineKeyboardButton(text="15 Birr",callback_data='15-birr')
@@ -327,6 +327,6 @@ def channel_btn(channel_id, **kwargs):
 subj=["🇬🇧 English", "🇪🇹 አማርኛ", "🧪 Chemistry", "🧮 Math", "🔭 Physics", "⚽️ HPE", "🔬 Biology", "💻 ICT", "🌏 History",
       "🧭 Geography", "🎪 Civics"]
 
-am_btns = ["📚መጽሐፍት", "🙋‍♂ የኔ ጥያቄዎች", "👨‍👩‍👦‍👦 ጋብዝ","⚙️ ቅንብሮች", "🗣 ጥያቄጠይቅ", "💬 አስታየት"]
+am_btns = ["📚መጽሐፍት", "🙋‍♂ የኔ ጥያቄዎች", "👨‍👩‍👦‍👦 ጋብዝ","⚙️ ቅንብሮች", "🗣 ጥያቄ ጠይቅ", "💬 አስታየት"]
 
 en_btns =["🙋‍♂My Questions", "📚 Books", "💬 Feedback", "👨‍👩‍👦‍👦 Invite", "⚙️ Settings", "🗣 Ask Question"]
