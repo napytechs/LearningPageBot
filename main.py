@@ -591,7 +591,7 @@ def channel_text():
    
     channels = json.loads(channels)
     chan = [bot.get_chat(c) for c in channels if c]
-    ch = [c.username for c in chan]
+    ch = ["@"+c.username for c in chan]
     chan = '\n'.join(ch)
     key = [key for key, val in channels.items()]
     key = [bot.get_chat(k) for k in key]
