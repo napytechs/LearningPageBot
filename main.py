@@ -339,7 +339,7 @@ SELECT invitation_link, invites, balance, bbalance, withdraw FROM students JOIN 
                          parse_mode="HTML", reply_markup=withdraw('am', DEEPLINK+link))
 
     elif msg.text == "🙋‍♂ የኔ ጥያቄዎች":
-        target = threading.Thread(target=browse, args=(user_id, 'am'))
+        target = threading.Thread(target=browse, args=(msg, 'am'))
         target.start()
         target.join()
 
@@ -352,7 +352,7 @@ SELECT invitation_link, invites, balance, bbalance, withdraw FROM students JOIN 
                          reply_markup=cancel(lang), parse_mode="html")
         bot.set_state(user_id, AskQuestion.question)
     elif msg.text == "💬 አስታየት":
-        bot.send_message(user_id, "<code>ያሎትን ሃሳብ ወይም ወይም አስታየት በጽሁ(Video,Photo) ይላኩ።</code>",
+        bot.send_message(user_id, "<code>ያሎትን ሃሳብ ወይም አስታየት ይላኩ።</code>",
                          reply_markup=cancel(lang), parse_mode="html")
         bot.set_state(user_id, AskQuestion.question)
 
@@ -588,7 +588,7 @@ def channel_text():
         channels = cur.fetchone()[0]
     except:
         channels = '{}'
-    print(channels)
+   
     channels = json.loads(channels)
     chan = [bot.get_chat(c) for c in channels if c]
     ch = [c.username for c in chan]
