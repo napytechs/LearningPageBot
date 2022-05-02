@@ -2128,6 +2128,7 @@ def browse(msg, ids):
             data.extend(ui)
             if not data[6]:
                 data[6] = ""
+        print(data)
         q, tq, c, sub, first, gend, acc = data
         data.clear()
         btn = types.InlineKeyboardMarkup()
@@ -2226,5 +2227,7 @@ def main():
     t1.start()
     bot.infinity_polling()
   
-if __name__ == "__main__":  
-    main()
+if __name__ == "__main__": 
+    while 1: 
+        try:main()
+        except:continue
