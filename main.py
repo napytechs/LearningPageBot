@@ -29,7 +29,8 @@ except:
 apihelper.ENABLE_MIDDLEWARE = True
 
 db = PrivateDatabase()
-conn, cur = connection()
+conn = connection()
+cur = conn.cursor(buffered=True)
 ADMIN_ID = 5213764043
 CHANNEL_ID = -1001793167733
 TOKEN = os.getenv("bot_token")
@@ -1186,12 +1187,12 @@ def on_questions_status(call: types.CallbackQuery):
     q_id = call.data.split(":")[2]
     text = call.data.split(":")[1]
     user_id = call.from_user.id
-    cur = conn.cursor()
     cur.execute("SELECT status, asker_id FROM Questions WHERE question_id = %s", (q_id,))
     status, q_u_id = cur.fetchone()
-
+    print("Asker id: ", q_u_id, "User Id ", user_id)
+    
     if not user_id != q_u_id:
-        bot.answer_callback_query(call.id, "Something went wrong....")
+        bot.answer_callback_query(call.id, "Error")
         bot.delete_message(user_id, call.message.message_id)
         return
 
