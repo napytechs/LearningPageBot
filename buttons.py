@@ -1,6 +1,7 @@
 from database import connection
 from telebot import types
-conn, c = connection()
+conn = connection()
+c = conn.cursor(buffered=True)
 from system import creator_id
 
 def language_btn():
