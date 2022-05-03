@@ -1,6 +1,7 @@
 from telebot.custom_filters import SimpleCustomFilter
 from database import connection
-c, CONN = connection()
+conn = connection()
+CONN = conn.cursor(buffered=True)
 
 class BotIsAdmin(SimpleCustomFilter):
     key = 'bot_is_admin'
