@@ -340,7 +340,7 @@ SELECT invitation_link, invites, balance, bbalance, withdraw FROM students JOIN 
                          parse_mode="HTML", reply_markup=withdraw('am', DEEPLINK+link))
 
     elif msg.text == "🙋‍♂ የኔ ጥያቄዎች":
-        target = threading.Thread(target=browse, args=(msg, 'am'))
+        target = threading.Thread(target=show_questions, args=(user_id, 'am'))
         target.start()
         target.join()
 
