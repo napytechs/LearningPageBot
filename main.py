@@ -1447,13 +1447,14 @@ def info_book(call, gr, typ):
     if  catch != (None):
         result = ""
         for i, v, m in catch:
+            i = i.title()
             if m != 0:
                 if v == 0:
-                    result+=i+": Free\n"
+                    result+=i+": Free ✅\n\n"
                 elif v >=1:
-                    result+=f"{i}: {v} coin\n"
+                    result+=f"{i}: {v} Birr\n\n"
             else:
-                result+=f'{i}: Not found!\n'
+                result+=f'{i}: Not found\n\n'
     else:
         result = """All book Coomingsoon !!"""
     lang = user_lang(call.from_user.id)
