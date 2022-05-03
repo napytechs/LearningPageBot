@@ -10,7 +10,6 @@ def connection():
             host=os.getenv('host'),
             port=5776
         )
-    cur = conn.cursor(buffered=True)
     try:
         conn.connect(buffered=True)
         conn.autocommit = True
@@ -20,12 +19,12 @@ def connection():
         conn.autocommit = True
     
     else:
-        return conn, cur
+        return conn
 
 class PrivateDatabase:
     def __init__(self):
-        self.conn, self.cur = connection()
-        cur = self.cur
+        self.conn = connection()
+        cur = self.cur = self.conn.cursor(buffered=True)
         cur.execute("Select id from books")
         bi = cur.fetchone()
         sub = ['math', 'physics', 'chemistry', 'biology', 'civics', 'geography', 'ict',  'hpe',  'history', 'english', 'amharic']
