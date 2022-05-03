@@ -12,11 +12,12 @@ def connection():
         )
     cur = conn.cursor(buffered=True)
     try:
-        conn.connect()
+        conn.connect(buffered=True)
         conn.autocommit = True
         
     except:
-        raise
+        conn.reconnect(buffered=True)
+        conn.autocommit = True
     
     else:
         return conn, cur
