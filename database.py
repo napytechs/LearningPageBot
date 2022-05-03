@@ -25,7 +25,7 @@ class PrivateDatabase:
     def __init__(self):
         self.conn = connection()
         cur = self.cur = self.conn.cursor(buffered=True)
-        '''cur.execute("Select id from books")
+        cur.execute("Select id from books")
         bi = cur.fetchone()
         sub = ['math', 'physics', 'chemistry', 'biology', 'civics', 'geography', 'ict',  'hpe',  'history', 'english', 'amharic']
         if bi is None:
@@ -35,7 +35,7 @@ class PrivateDatabase:
                         cur.execute('insert into books(grade, type, subject, balance, msg_id) values(%s, %s, %s, %s, %s)', 
                         (grade, i, s, 0, 0))
                         self.conn.commit()
-        '''
+        
     def user_is_not_exist(self, user_id):
         self.cur.execute("SELECT user_id FROM students")
 
