@@ -33,7 +33,7 @@ conn = connection()
 cur = conn.cursor(buffered=True)
 ADMIN_ID = 5213764043
 CHANNEL_ID = -1001793167733
-TOKEN = os.getenv("bot_token")
+TOKEN = "5111958751:AAHZtj0vrkqmaNWXuAokdjBE-CT19pUvY9A"
 
 bot = TeleBot(TOKEN)
 
