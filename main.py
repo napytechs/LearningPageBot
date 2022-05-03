@@ -1191,7 +1191,7 @@ def on_questions_status(call: types.CallbackQuery):
     status, q_u_id = cur.fetchone()
     print("Asker id: ", q_u_id, "User Id ", user_id)
     
-    if not user_id != q_u_id:
+    if user_id != q_u_id:
         bot.answer_callback_query(call.id, "Error")
         bot.delete_message(user_id, call.message.message_id)
         return
