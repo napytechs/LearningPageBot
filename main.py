@@ -33,7 +33,7 @@ conn = connection()
 cur = conn.cursor(buffered=True)
 ADMIN_ID = 5213764043
 CHANNEL_ID = -1001793167733
-TOKEN = "5338935927:AAH9Gms4A0RHNoytOAggJyobChHVYhua4x8"#os.getenv("bot_token")
+TOKEN = os.getenv("bot_token")
 
 bot = TeleBot(TOKEN)
 
@@ -1460,10 +1460,10 @@ def info_book(call, gr, typ):
     lang = user_lang(call.from_user.id)
     if call.data == call.data:
         if lang == "am":
-            text = 'መጽሃፍ ይምረጡ'
+            text = '🧾 መጽሃፍ ይምረጡ'
         else:
-            text = "Chose book"
-        text+='\n'+result
+            text = "🧾 Chose book"
+        text+='\n\n'+result
     lang = user_lang(call.message.chat.id)
     return text, books_btn(lang, typ, gr)
 
