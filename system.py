@@ -105,6 +105,7 @@ class UserJoinedChannelsFilter(SimpleCustomFilter):
         joined = True
         CONN.execute("select channels from bot_setting")
         _channels = CONN.fetchone()
+        print(_channels)
         if _channels:
             channels:dict = json.loads(_channels[0])
         else:
