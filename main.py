@@ -327,6 +327,8 @@ SELECT invitation_link, invites, balance, withdraw, bbalance FROM students join 
 @bot.message_handler(func=lambda msg: msg.text in am_btns, chat_types=['private'], joined=True, not_banned=True)
 def amharic_button(msg: types.Message):
     user_id = msg.chat.id
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     if not is_verified(user_id):
         bot.send_message(user_id, "በቅድሚያ ስልክ ቁጥሮን በመላክ መዝገባ ያከናውኑ!", reply_markup=am_phone())
         return
