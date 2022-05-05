@@ -1,7 +1,6 @@
 from telebot.custom_filters import SimpleCustomFilter
 from database import connection
-conn = connection()
-CONN = conn.cursor(buffered=True)
+
 
 class BotIsAdmin(SimpleCustomFilter):
     key = 'bot_is_admin'
@@ -21,6 +20,8 @@ class CallbackAdmin(SimpleCustomFilter):
         return self.bot.get_chat_member(call.message.chat.id,call.message.from_user.id).status in ['administrator','creator']
 
 def is_verified(id):
+    conn = connection()
+    CONN = conn.cursor(buffered=True)
     CONN.execute("select is_verified from students where user_id = %s", (id, ))
 
     for verified in CONN.fetchone():
@@ -30,11 +31,15 @@ def is_verified(id):
     return False
 
 def user_lang(user_id: int):
+    conn = connection()
+    CONN = conn.cursor(buffered=True)
     CONN.execute('SELECT lang FROM students WHERE user_id = %s', (user_id,))
     lang = CONN.fetchone()
     return lang[0]
 
 def creator_id():
+    conn = connection()
+    CONN = conn.cursor(buffered=True)
     CONN.execute('SELECT user_id, status FROM students')
     for i, s in CONN.fetchall():
         if s == 'creator':
@@ -42,11 +47,15 @@ def creator_id():
             
 def get_admins():
     import json
+    conn = connection()
+    CONN = conn.cursor(buffered=True)
     CONN.execute("SELECT admins from bot_setting")
     admins = json.loads(CONN.fetchone()[0])
     return admins
 
 def get_user_p(user_id):
+    conn = connection()
+    CONN = conn.cursor(buffered=True)
     CONN.execute("SELECT first_name, account_link, gender, status FROM students WHERE user_id = %s", (user_id,))
     name, ac_l, gen, stat = CONN.fetchone()
     if not gen:gen = ""
@@ -66,6 +75,8 @@ class FromUserFlter(SimpleCustomFilter):
 class IsAdminfilter(SimpleCustomFilter):
     key = 'is_admin_or_creator'
     def check(self, message):
+        conn = connection()
+        CONN = conn.cursor(buffered=True)
         CONN.execute('SELECT status FROM students WHERE user_id = %s', (message.chat.id, ))
         admin = CONN.fetchone()[0]
         if admin == 'admin' or admin == 'creator':
@@ -87,6 +98,8 @@ class NotBannedFilter(SimpleCustomFilter):
     key = 'not_banned'
 
     def check(self, message):
+        conn = connection()
+        CONN = conn.cursor(buffered=True)
         CONN.execute("SELECT status FROM students WHERE user_id = %s", (message.from_user.id, ))
         user = CONN.fetchone()
         if user:
@@ -103,6 +116,8 @@ class UserJoinedChannelsFilter(SimpleCustomFilter):
     def check(self, message):
         import json
         joined = True
+        conn = connection()
+        CONN = conn.cursor(buffered=True)
         CONN.execute("select channels from bot_setting")
         _channels = CONN.fetchone()
         print(_channels)
