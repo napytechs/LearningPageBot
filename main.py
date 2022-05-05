@@ -29,8 +29,6 @@ except:
 apihelper.ENABLE_MIDDLEWARE = True
 
 db = PrivateDatabase()
-conn = connection()
-cur = conn.cursor(buffered=True)
 ADMIN_ID = 5213764043
 CHANNEL_ID = -1001793167733
 TOKEN = "5111958751:AAHZtj0vrkqmaNWXuAokdjBE-CT19pUvY9A"
@@ -67,6 +65,8 @@ class OnMessage(StatesGroup):
     
 @bot.message_handler(commands=['start'], chat_types=['private'], is_deeplink=False, joined=True, not_banned=True)
 def start_message(msg):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = msg.chat.id
     date = time()
     inv_link = generator.invite_link(user_id)
@@ -99,6 +99,8 @@ def start_message(msg):
 
 @bot.message_handler(commands=['start'], is_deeplink=True, chat_types=["private"], not_banned=True)
 def start_(msg: types.Message):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     text = msg.text.split()[1]
     cur.execute("SELECT account_link FROM students")
     al = cur.fetchall()
@@ -157,6 +159,8 @@ def start_(msg: types.Message):
 
 @bot.message_handler(commands=['user'], chat_types=['private'], chat_id=[creator_id()])
 def free_user(msg: types.Message):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     text = msg.text.split()
     if len(text) == 2:
         try:
@@ -185,6 +189,8 @@ def free_user(msg: types.Message):
 @bot.callback_query_handler(func=lambda call: call.data in ['am', 'en'], joined=True, not_banned=True)
 def update_user_language(call: types.CallbackQuery):
     user_id = call.message.chat.id
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     if call.data == 'am':
         db.update_lang(call.data, user_id)
         bot.answer_callback_query(call.id, "ቋንቋዎ ወደ አማርኛ ተቀይሯል ።")
@@ -201,6 +207,8 @@ def update_user_language(call: types.CallbackQuery):
 @bot.message_handler(content_types=['contact'], joined=True, not_banned=True)
 def register_phone(msg):
     global list_codes
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     phone_number = msg.contact.phone_number
     find_phone = re.search(r"^\+?251\d{9}$", phone_number)
     user_id = msg.chat.id
@@ -268,6 +276,8 @@ def cancel_feedback(msg):
 
 @bot.message_handler(func=lambda msg: msg.text in en_btns, chat_types=['private'], joined=True, not_banned=True)
 def english_button(msg):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = msg.chat.id
     lang = user_lang(user_id)
     if not lang == 'en':return
@@ -364,6 +374,8 @@ def for_banned_user(msg: Union[types.Message, types.CallbackQuery]):
 
 @bot.message_handler(joined=False, chat_types=['private'])
 def join_channel_message(msg: Union[types.Message, types.CallbackQuery]):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = msg.from_user.id
     cur.execute('select channels from bot_setting')
     channels:dict = json.loads(cur.fetchone()[0])
@@ -388,6 +400,8 @@ def call_banned(call: types.CallbackQuery):
 
 @bot.callback_query_handler(func=lambda call: re.match(r"^user", call.data))
 def get_user(call: types.CallbackQuery):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     text = call.data.split(":")[1]
     user_id = int(call.data.split(':')[2])
     cur = conn.cursor()
@@ -442,6 +456,8 @@ def get_user(call: types.CallbackQuery):
 
 @bot.callback_query_handler(func=lambda call: re.match(r'^usend', call.data))
 def sendmessage(call: types.CallbackQuery):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = call.data.split(":")[1]
     bot.answer_callback_query(call.id, "Sent")
     name, acc, gen, stat = get_user_p(user_id)
@@ -468,7 +484,8 @@ def bot_stng_msg(user_id):
 @bot.message_handler(text=["📝 Send Message", "🤖 Bot Setting", "📊 Statics", "🧩 Questions"],
                      is_admin_or_creator=True, chat_types=['private'])
 def admins_button(msg: types.Message):
-    cur = conn.cursor()
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     try:
         cur.execute("SELECT admins FROM bot_setting")
         admin_permision = cur.fetchone()[0]
@@ -538,6 +555,8 @@ You can also «Forward» text from another chat or channel.
 
 @bot.message_handler(state=OnMessage.get_msg, content_types=util.content_type_media)
 def on_get_message(msg: types.Message):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     btn = types.InlineKeyboardMarkup()
     
     btn.add(
@@ -565,6 +584,8 @@ def on_got_message(call: types.CallbackQuery):
 @bot.message_handler(state=OnMessage.add_btn)
 def on_send_btn(msg: types.Message):
     text = msg.text
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     match = re.findall(r"\w+\s*->\s*[a-zA-Z@0-9.]+", text)
     if match:
         btns = {k.split('->')[0]:k.split('->')[1] for k in match}
@@ -602,6 +623,8 @@ def channel_text():
 
 
 def admin_text():
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     try:
         cur.execute("SELECT admins FROM bot_setting")
         admins = cur.fetchone()[0]
@@ -619,6 +642,8 @@ def admin_text():
 
 @bot.callback_query_handler(func=lambda call: re.match(r"^bot:", call.data))
 def on_bot_setting(call: types.CallbackQuery):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     bot.answer_callback_query(call.id)
     text = call.data.split(':')[1]
     user_id = call.message.chat.id
@@ -663,6 +688,8 @@ def on_bot_setting(call: types.CallbackQuery):
 
 @bot.message_handler(state=BotSetting.balance, is_number=True, chat_types=['private'])
 def set_balance(msg: types.Message):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     bot.delete_message(msg.chat.id, msg.message_id-2)
     bot.send_message(msg.chat.id, "Balance updated ✅")
     db.update_bot_balance(msg.text)
@@ -678,6 +705,8 @@ def set_balance(msg: types.Message):
 @bot.callback_query_handler(func=lambda call: call.data == 'bscancel', state='*')
 def cancel_on_add_admin(call: types.CallbackQuery):
     state = bot.get_state(call.message.chat.id)
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     bot.answer_callback_query(call.id)
     bot.delete_state(call.message.chat.id)
     t, k = channel_text()
@@ -694,6 +723,8 @@ def cancel_on_add_admin(call: types.CallbackQuery):
 def add_channel(msg: types.Message):
     channel = msg.forward_from_chat
     user_id = msg.from_user.id
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     try:
         assert channel.type == 'channel', "Must be channel not "+channel.type
         assert channel.username, "the channel must have a username!"
@@ -717,6 +748,8 @@ def add_channel(msg: types.Message):
         return True
 
 def admin_permision(admin_id, o_ad=False):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     cur.execute("select admins from bot_setting")
     ujson:dict = json.loads(cur.fetchone()[0])
     cur.execute("select status from students where user_id = %s", (admin_id,))
@@ -728,6 +761,8 @@ def admin_permision(admin_id, o_ad=False):
     return text, btn
 
 def channel_permision(channel_id):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     cur.execute("select channels from bot_setting")
     ujson:dict = json.loads(cur.fetchone()[0])
     per = ['✅' if ujson[channel_id][key] else "❌" for key in ujson.get(channel_id)]
@@ -740,6 +775,8 @@ def channel_permision(channel_id):
 def add_admin(msg: types.Message):
     user_id = msg.from_user.id
     user = int(msg.text)
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     try:
         assert not db.user_is_not_exist(user), "User not found"
         cur.execute("select status from students where user_id = %s", (user,))
@@ -763,6 +800,8 @@ def add_admin(msg: types.Message):
 
 @bot.callback_query_handler(func=lambda call: re.search(r'channel:', call.data))
 def click_channel(call: types.CallbackQuery):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     bot.answer_callback_query(call.id)
     user_id, msg_id = call.from_user.id, call.message.message_id
     channel_id = call.data.split(':')[1]
@@ -772,6 +811,8 @@ def click_channel(call: types.CallbackQuery):
 @bot.callback_query_handler(func=lambda call:re.search(r'myc', call.data))
 def on_channel_permision(call: types.CallbackQuery):
     bot.answer_callback_query(call.id)
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     channel_id = call.data.split(":")[1]
     text = call.data.split(":")[2]
     user_id = call.from_user.id
@@ -817,6 +858,8 @@ def click_admin(call: types.CallbackQuery):
 
 @bot.callback_query_handler(lambda call: re.search(r'admin:', call.data))
 def on_admin_permision(call: types.CallbackQuery):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     bot.answer_callback_query(call.id)
     admin_id = call.data.split(":")[2]
     user_id = call.from_user.id
@@ -883,6 +926,8 @@ def on_admin_permision(call: types.CallbackQuery):
 
 @bot.message_handler(state=OnMessage.reply, content_types=util.content_type_media)
 def replytouser(msg: types.Message):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     with bot.retrieve_data(msg.chat.id) as data:
         user_id = data['to']
     bot.send_message(msg.chat.id, "sent!")
@@ -903,6 +948,8 @@ def sendtouser(msg: types.Message):
 
 @bot.callback_query_handler(func=lambda call: re.match(r"^uq", call.data))
 def approve_or_decline(call: types.CallbackQuery):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     text = call.data.split("_")[1]
     q_id = call.data.split("_")[2]
     cur = conn.cursor()
@@ -1019,6 +1066,8 @@ def report_answer(call: types.CallbackQuery):
 
 @bot.message_handler(state=Feedback.Text, content_types=util.content_type_media, joined=True, not_banned=True)
 def user_feedback(msg):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = msg.chat.id
     cur = conn.cursor()
     lang = user_lang(user_id)
@@ -1084,6 +1133,8 @@ def ask_question(msg):
 
 @bot.message_handler(state=AskQuestion.subject, joined=True, not_banned=True)
 def response_question(msg):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = msg.from_user.id
     subject = msg.text
     lang = user_lang(user_id)
@@ -1154,6 +1205,8 @@ def response_question(msg):
         
 @bot.callback_query_handler(func=lambda call: re.search('^(send_|edit_|del_)', call.data), joined=True, not_banned=True)
 def submit_question(call: types.CallbackQuery):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = call.from_user.id
     cur = conn.cursor()
     lang = user_lang(user_id)
@@ -1186,6 +1239,8 @@ def submit_question(call: types.CallbackQuery):
 def on_questions_status(call: types.CallbackQuery):
     q_id = call.data.split(":")[2]
     text = call.data.split(":")[1]
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = call.from_user.id
     cur.execute("SELECT status, asker_id FROM Questions WHERE question_id = %s", (q_id,))
     status, q_u_id = cur.fetchone()
@@ -1243,6 +1298,8 @@ def on_questions_status(call: types.CallbackQuery):
 def answer_questions(call: types.CallbackQuery):
     bot.answer_callback_query(call.id)
     msg = call.message
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     q_id = int(call.data.split('_')[1])
     lang = user_lang(msg.chat.id)
     bot.send_message(msg.chat.id, "<code>Send your answer through Text, Voice or Media(photo, video)</code>",
@@ -1255,6 +1312,8 @@ def answer_questions(call: types.CallbackQuery):
                      joined=True, not_banned=True, chat_types=['private'])
 def on_preview_answer(msg: types.Message):
     user_id = msg.from_user.id
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     with bot.retrieve_data(user_id) as data:
         q_id = data.get('q_id')
         is_reply = data.get('on_reply')
@@ -1324,6 +1383,8 @@ def on_preview_answer(msg: types.Message):
 @bot.callback_query_handler(func=lambda c: re.search("^(Send|Edit|Del)Answer", c.data), joined=True, not_banned=True)
 def send_answer(call: types.CallbackQuery):
     user_id = call.message.chat.id
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     umsg_id = call.message.message_id
     q_id = (call.data.split("_")[1])
     ans_id = int(call.data.split("_")[2])
@@ -1394,6 +1455,8 @@ def send_answer(call: types.CallbackQuery):
 
 @bot.callback_query_handler(func=lambda call: re.match(r'^areply', call.data))
 def reply_to_answer(call: types.CallbackQuery):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     bot.answer_callback_query(call.id)
     bot.send_message(call.message.chat.id, "Send your reply through text, voice or Media (Photo, Video)")
     bot.set_state(call.message.chat.id, Answer.answer)
@@ -1403,6 +1466,8 @@ def reply_to_answer(call: types.CallbackQuery):
 
 @bot.callback_query_handler(func=lambda call: call.data in ['edus', 'edut', 'edutref'], joined=True, not_banned=True)
 def answer_books(call):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     bot.answer_callback_query(call.id)
     lang = user_lang(call.from_user.id)
 
@@ -1416,6 +1481,8 @@ def answer_books(call):
 
 @bot.callback_query_handler(func=lambda c: c.data == 'backgrade', joined=True, not_banned=True)
 def back_grade(call):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     bot.answer_callback_query(call.id)
     user_id = call.from_user.id
     lang = user_lang(user_id)
@@ -1428,6 +1495,8 @@ def back_grade(call):
 
 @bot.callback_query_handler(func=lambda call: re.match(r"^grade", call.data))
 def get_books(call: types.CallbackQuery):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     bot.answer_callback_query(call.id)
     gr = call.data.split("_")[1]
     typ = call.data.split("_")[2]
@@ -1442,6 +1511,8 @@ def get_books(call: types.CallbackQuery):
     bot.edit_message_text(text, call.from_user.id, call.message.message_id, reply_markup=btn)
 
 def info_book(call, gr, typ):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     cur.execute("SELECT subject, balance, msg_id FROM books WHERE grade = %s AND type = %s", (gr, typ))
     catch = cur.fetchall()
     if  catch != (None):
@@ -1469,6 +1540,8 @@ def info_book(call, gr, typ):
 
 @bot.callback_query_handler(func=lambda call: re.match(r"book", call.data))
 def on_get_books(call: types.CallbackQuery):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     subject = call.data.split(":")[1]
     cur = conn.cursor()
     lang = user_lang(call.message.chat.id)
@@ -1544,6 +1617,8 @@ class OnBook(StatesGroup):
 
 @bot.callback_query_handler(func=lambda call: re.match(r"ubook", call.data))
 def on_book_setting(call: types.CallbackQuery):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     bot.answer_callback_query(call.id)
     bk, cmd, bi = call.data.split(":")
     cur.execute('select grade from books where id = %s ', (bi,))
@@ -1576,6 +1651,8 @@ def on_book_setting(call: types.CallbackQuery):
 
 @bot.message_handler(state=OnBook.add, content_types=['document'], is_forwarded=True)
 def add_book(msg: types.Message):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     msg_id = msg.forward_from_message_id
     with bot.retrieve_data(msg.chat.id) as data:
         kw = data['book_id']
@@ -1593,6 +1670,8 @@ def add_book(msg: types.Message):
 @bot.message_handler(state=OnBook.bal, is_digit=True)
 def set_book_balance(msg: types.Message):
     balance = msg.text
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     with bot.retrieve_data(msg.chat.id) as data:
         kw = data['book_id']
     cur.execute("UPDATE books set balance = %s WHERE id = %s", (balance, kw))
@@ -1609,6 +1688,9 @@ def set_book_balance(msg: types.Message):
 
 @bot.callback_query_handler(func=lambda call: call.data == 'withdr', joined=True, not_banned=True)
 def withdraw_money(call):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
+    
     bot.answer_callback_query(call.id)
     user_id = call.from_user.id
     lang = user_lang(user_id)
@@ -1620,6 +1702,8 @@ def withdraw_money(call):
         
 @bot.callback_query_handler(func=lambda call: re.search('birr$|^backwithdr$', call.data), joined=True, not_banned=True)
 def cashout_or_ignore(call):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = call.from_user.id
     cur = conn.cursor()
     cur.execute('select balance,lang,withdraw from students where user_id = %s', (user_id,))
@@ -1667,6 +1751,8 @@ lang, gender, balance FROM students WHERE user_id = %s""", (user_id,))
 
 @bot.callback_query_handler(func=lambda call: call.data == 'bt', joined=True, not_banned=True)
 def transfer_birr(call):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = call.from_user.id
     bot.answer_callback_query(call.id)
     lang = user_lang(user_id)
@@ -1677,6 +1763,8 @@ def transfer_birr(call):
     bot.register_next_step_handler(text, tr_money)
 
 def tr_money(msg):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = msg.chat.id
     lang = user_lang(user_id)
     if msg.text.isdigit():
@@ -1703,7 +1791,8 @@ def tr_money(msg):
 
 @bot.callback_query_handler(func=lambda call: re.search('^tr', call.data), joined=True, not_banned=True)
 def transfer_birr_to_user(call):
-    cur = conn.cursor()
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = call.from_user.id
     r_id = call.data.split('_')[1]
     r_id = int(r_id)
@@ -1749,6 +1838,8 @@ def transfer_birr_to_user(call):
 @bot.callback_query_handler(func=lambda call: call.data == 'bonus', joined=True, not_banned=True)
 def recieve_bonus(call):
     data = {}
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = call.from_user.id
     randb = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.9]
     amount = random.choice(randb)
@@ -1793,6 +1884,8 @@ at least you have to wait {24-int(clock)//60//60} hours! ", show_alert=True)
 
 @bot.callback_query_handler(func=lambda call: call.data in ['lang', 'editp', 'closeS'], joined=True, not_banned=True)
 def usersetting(call):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     bot.answer_callback_query(call.id)
     user_id = call.from_user.id
     msg_id = call.message.message_id
@@ -1818,7 +1911,8 @@ def user_profile(call):
     user_id = call.from_user.id
     bot.clear_step_handler_by_chat_id(user_id)
     lang = user_lang(user_id)
-    cur = conn.cursor()
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     if call.data == 'fname':
         fname = bot.send_message(user_id, "Enter your name\nNote that your name can only "
                                           "include latters and starts with capital latter!")
@@ -1879,6 +1973,8 @@ def first_(msg):
         bot.send_message(user_id, "Invalid name")
 
 def username_(msg):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = msg.chat.id
     text = msg.text
     cur = conn.cursor()
@@ -1928,6 +2024,8 @@ def username_(msg):
         bot.send_message(user_id, "Invalid username")
 
 def bio_(msg):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = msg.chat.id
     user_bio = re.search(r'(.*){75}', msg.text, re.DOTALL)
 
@@ -1948,6 +2046,8 @@ def bio_(msg):
 @bot.callback_query_handler(func=lambda call: call.data in ['male', 'famale', 'back_gender', 'main_gender'],
                             joined=True, not_banned=True)
 def gender_edit(call):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     bot.answer_callback_query(call.id)
     user_id = call.from_user.id
     lang = user_lang(user_id)
@@ -1972,6 +2072,8 @@ def gender_edit(call):
         user_profile(call)
 
 def user_not_joined():
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     cur.execute("select channels from bot_setting")
     channels = json.loads(cur.fetchone()[0])
     text = ""
@@ -2004,6 +2106,8 @@ def user_not_joined():
     del text, _text, get, get_u
 
 def show_account_info(msg, text):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     data = []
 
     cur.execute(
@@ -2037,6 +2141,8 @@ def show_account_info(msg, text):
                          parse_mode="html")
 
 def user_via_link(msg, text):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     if db.user_is_not_exist(msg.chat.id):
         cur.execute("SELECT first_name, gender FROM students "
                     "WHERE user_id = %s", (text,))
@@ -2060,6 +2166,8 @@ def user_via_link(msg, text):
 
 
 def show_questions(user_id, lang):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     showed = False
     count = 0
     cur.execute("""
@@ -2115,6 +2223,8 @@ def show_questions(user_id, lang):
             bot.send_message(user_id, "ይቅርታ እስካሁን ምንም የጠየቁት ጥያቄ የለም ።", reply_markup=ask_q)
 
 def browse(msg, ids):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     user_id = ids
     print(user_id, msg)
     data = []
@@ -2192,6 +2302,8 @@ def browse(msg, ids):
 
 
 def send_to_users(call: types.CallbackQuery):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     cur.execute("SELECT user_id FROm students")
     users_id = cur.fetchall()
     user_id = [ui for user_id in users_id for ui in user_id]
@@ -2231,6 +2343,8 @@ def main():
   
 if __name__ == "__main__": 
     while 1: 
-        try:print("Poling started");main()
+        try:
+            print("Poling started");
+            main()
         except Exception as e:print(e)
     print("Stopped")
