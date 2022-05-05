@@ -23,8 +23,8 @@ def connection():
 
 class PrivateDatabase:
     def __init__(self):
-        self.conn = connection()
-        cur = self.cur = self.conn.cursor(buffered=True)
+        conn = connection()
+        cur = conn.cursor(buffered=True)
         cur.execute("Select id from books")
         '''bi = cur.fetchone()
         sub = ['math', 'physics', 'chemistry', 'biology', 'civics', 'geography', 'ict',  'hpe',  'history', 'english', 'amharic']
@@ -37,7 +37,9 @@ class PrivateDatabase:
                         self.conn.commit()
         '''
     def user_is_not_exist(self, user_id):
-        self.cur.execute("SELECT user_id FROM students")
+        conn = connection()
+        cur =conn.cursor(buffered=True)
+        cur.execute("SELECT user_id FROM students")
 
         if not user_id in [i for j in self.cur.fetchall() for i in j]:
                 return True
@@ -46,10 +48,12 @@ class PrivateDatabase:
 
     def save_data(self, first_name, user_id, date,
                 link, balance, lang,
-                acc_lick, is_ver, status):
+                acc_lick, is_ver, status):                  
+                    
         list = [first_name, user_id, date, link, 0, balance, lang, acc_lick, is_ver, 0, '', 'No bio yet', status]
-
-        self.cur.execute('''    
+        conn = connection()
+        cur = conn.cursor(buffered=True)
+        cur.execute('''    
             INSERT INTO students(
             first_name, 
             user_id,
@@ -66,95 +70,122 @@ class PrivateDatabase:
             status)
             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
             ''', list)
-        self.conn.commit()
+        conn.commit()
 
     def update_lang(self, lang, user_id):
-        self.cur.execute("""UPDATE students SET lang = %s WHERE user_id = %s""", (lang, user_id))
-        self.conn.commit()
+        conn = connection()
+        cur = conn.cursor(buffered=True)
+        cur.execute("""UPDATE students SET lang = %s WHERE user_id = %s""", (lang, user_id))
+        conn.commit()
 
     def update_name(self, user_id, first_name):
-        cur = self.conn.cursor()
+        conn = connection()
+        cur = conn.cursor(buffered=True)
         cur.execute("UPDATE students SET first_name = %s WHERE user_id = %s", (first_name, user_id,))
-        self.conn.commit()
+        conn.commit()
 
     def update_username(self, user_id, username):
-        cur = self.conn.cursor()
+        conn = connection()
+        cur = conn.cursor(buffered=True)
         cur.execute("UPDATE students SET username = %s WHERE user_id = %s", (username, user_id,))
-        self.conn.commit()
+        conn.commit()
 
     def update_gender(self, user_id, gender):
-        cur = self.conn.cursor()
+        conn = connection()
+        cur = conn.cursor(buffered=True)
         cur.execute("UPDATE students SET gender = %s  WHERE user_id = %s", (gender, user_id))
-        self.conn.commit()
+        conn.commit()
 
     def update_phone(self, user_id, phone):
+        conn = connection()
+        cur = conn.cursor(buffered=True)
         try:
-            self.cur.execute("UPDATE students SET phone_number = %s  WHERE user_id = %s", (phone, user_id))
+            cur.execute("UPDATE students SET phone_number = %s  WHERE user_id = %s", (phone, user_id))
         except Exception as e:
-            print(e)
-            self.cur.execute('delete from students where phone_number = %s', (phone,))
-            self.cur.execute("UPDATE students SET phone_number = %s  WHERE user_id = %s", (phone, user_id))
+            #print(e)
+            cur.execute('delete from students where phone_number = %s', (phone,))
+            cur.execute("UPDATE students SET phone_number = %s  WHERE user_id = %s", (phone, user_id))
         finally:
-            self.conn.commit()
+            conn.commit()
 
     def update_bio(self, user_id, bio):
-        cur = self.conn.cursor()
+        conn = connection()
+        cur = conn.cursor(buffered=True)
         cur.execute('UPDATE students SET bio = %s WHERE user_id = %s', (bio, user_id,))
-        self.conn.commit()
+        conn.commit()
 
     def save_question(self, user_id, text, typ, subj,  q_link, b_link, caption=""):
+        conn = connection()
+        cur = conn.cursor(buffered=True)
         from time import  time
-        self.cur.execute("""INSERT INTO Questions(asker_id, question, time, type_q, status, subject, question_link, 
+        cur.execute("""INSERT INTO Questions(asker_id, question, time, type_q, status, subject, question_link, 
         browse_link, browse, caption) VALUES(%s , %s, %s, %s, %s, %s, %s, %s, 0, %s)""",
                      (user_id, text, time(), typ, 'preview', subj, q_link, b_link, caption))
-        self.conn.commit()
+        conn.commit()
 
 
     def update_bot_balance(self, balance):
-        self.cur.execute("UPDATE bot_setting SET bbalance = %s", (balance,))
-        self.conn.commit()
+        conn = connection()
+        cur = conn.cursor(buffered=True)
+        cur.execute("UPDATE bot_setting SET bbalance = %s", (balance,))
+        conn.commit()
 
     def update_balance(self, user_id, balance):
-        self.cur.execute("UPDATE students SET balance = balance + %s WHERE user_id = %s", (balance, user_id))
-        self.conn.commit()
+        conn = connection()
+        cur = conn.cursor(buffered=True)
+        cur.execute("UPDATE students SET balance = balance + %s WHERE user_id = %s", (balance, user_id))
+        conn.commit()
 
     def update_invite(self, inviter_id, invited_id):
-        self.cur.execute("INSERT INTO invites VALUES(%s, %s, %s)", (inviter_id, invited_id, 0))
-        self.cur.execute("UPDATE students SET invites = invites + 1 WHERE user_id =  %s", (inviter_id,))
-        self.conn.commit()
+        conn = connection()
+        cur = conn.cursor(buffered=True)
+        cur.execute("INSERT INTO invites VALUES(%s, %s, %s)", (inviter_id, invited_id, 0))
+        cur.execute("UPDATE students SET invites = invites + 1 WHERE user_id =  %s", (inviter_id,))
+        conn.commit()
 
     def ban_user(self, user_id):
-        self.cur.execute("UPDATE students SET status = 'banned' WHERE user_id = %s", (user_id,))
-        self.conn.commit()
+        conn = connection()
+        cur = conn.cursor(buffered=True)
+        cur.execute("UPDATE students SET status = 'banned' WHERE user_id = %s", (user_id,))
+        conn.commit()
 
     def unban_user(self, user_id):
-        self.cur.execute("UPDATE students SET status = 'member' WHERE user_id = %s", (user_id,))
-        self.conn.commit()
+        conn = connection()
+        cur = conn.cursor(buffered=True)
+        cur.execute("UPDATE students SET status = 'member' WHERE user_id = %s", (user_id,))
+        conn.commit()
 
     def set_verifie(self, user_id):
-        self.cur.execute("UPDATE students SET is_verified = 'True' WHERE user_id = %s", (user_id,))
-        self.conn.commit()
-        self.cur.execute("SELECT invited_id FROM invites")
-        i = self.cur.fetchall()
+        conn = connection()
+        cur = conn.cursor(buffered=True)
+        cur.execute("UPDATE students SET is_verified = 'True' WHERE user_id = %s", (user_id,))
+        conn.commit()
+        cur.execute("SELECT invited_id FROM invites")
+        i = cur.fetchall()
         if (user_id,) in [j for j in i]:
             
-            self.cur.execute("SELECT bbalance, inviter_id FROM bot_setting JOIN invites WHERE invited_id = %s", (user_id,))
-            u = self.cur.fetchone()
-            self.cur.execute("UPDATE students SET balance = balance + %s WHERE user_id = %s", u)
-            self.conn.commit()
+            cur.execute("SELECT bbalance, inviter_id FROM bot_setting JOIN invites WHERE invited_id = %s", (user_id,))
+            u = cur.fetchone()
+            cur.execute("UPDATE students SET balance = balance + %s WHERE user_id = %s", u)
+            conn.commit()
 
     def insert_answer(self, user_id, q_id, ans, typ, a_link, caption, reply_to=0):
+        conn = connection()
+        cur = conn.cursor(buffered=True)
         from time import time
-        self.cur.execute(
+        
+        cur.execute(
             "INSERT INTO Answers(user_id, question_id, answer, type_ans, time, answer_link, status, caption, reply_to) "
             "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
             (
                 user_id, q_id, ans, typ, time(), a_link, 'preview', caption, reply_to
             ))
-        self.conn.commit()
+        conn.commit()
 
     def withdraw(self, user_id, amount):
-        self.cur.execute('update students set balance = balance - %s where user_id = %s', (amount, user_id))
-        self.cur.execute('update students set withdraw = withdraw +  %s where user_id = %s', (amount, user_id))
-        self.conn.commit()
+        conn = connection()
+        cur = conn.cursor(buffered=True)
+        cur.execute('update students set balance = balance - %s where user_id = %s', (amount, user_id))
+        cur.execute('update students set withdraw = withdraw +  %s where user_id = %s', (amount, user_id))
+        conn.commit()
 
