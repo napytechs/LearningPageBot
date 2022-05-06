@@ -42,7 +42,7 @@ class PrivateDatabase:
         cur =conn.cursor(buffered=True)
         cur.execute("SELECT user_id FROM students")
 
-        if not user_id in [i for j in self.cur.fetchall() for i in j]:
+        if not user_id in [i for j in cur.fetchall() for i in j]:
                 return True
         else:
             return False 
