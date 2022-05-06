@@ -204,69 +204,6 @@ def update_user_language(call: types.CallbackQuery):
                          parse_mode="Markdown")
 
 
-@bot.message_handler(content_types=['contact'], joined=True, not_banned=True)
-def register_phone(msg):
-    global list_codes
-    conn = connection()
-    cur = conn.cursor(buffered=True)
-    phone_number = msg.contact.phone_number
-    find_phone = re.search(r"^\+?251\d{9}$", phone_number)
-    user_id = msg.chat.id
-    try:
-        if not is_verified(user_id):
-            if find_phone:
-                try:
-                    db.update_phone(user_id, find_phone.group())
-                except:
-                    raise
-
-                codes = generator.verification_code()
-                list_codes[user_id] = codes
-                #send_sms(phone_number, "Student", codes)
-                lang = user_lang(user_id)
-                print(codes)
-                if lang == 'am':
-                    text = f"የማረጋገጫ ቁጥር ያስገቡ {codes}"
-
-                else:
-                    text = f"Enter Your verification code. {codes} "
-                ver_code = bot.send_message(msg.chat.id, text, reply_markup=types.ReplyKeyboardRemove())
-                bot.register_next_step_handler(ver_code, verifie_am)
-
-            else:
-                try:
-                    db.ban_user(user_id)
-                except:
-                    raise
-                bot.send_message(user_id, "Banned Number!")
-
-    except ApiTelegramException as e:
-        logging.exception(e)
-
-def verifie_am(msg):
-    text = msg.text
-    user_id = msg.chat.id
-    lang = user_lang(user_id)
-    if text == list_codes[user_id]:
-        if lang == 'am':
-            text = "_ምዝገባ በተሳካ ሁነታ ተጠናቋል ።_"
-            text_ = "_ከሚከተሉት አንዱን ምርጫ ይምረጡ_"
-            btn = main_buttons('am', user_id)
-
-        else:
-            text = "_Registration Successfully!_"
-            text_ = "_Select one Option_"
-            btn = main_buttons('en', user_id)
-
-        bot.send_message(user_id, text, parse_mode='Markdown')
-        bot.send_message(msg.chat.id, text_, reply_markup=btn, parse_mode="Markdown")
-        try:
-            db.set_verifie(user_id)
-        except:
-            raise
-    else:
-        ver_code = bot.send_message(user_id, "Invalid Code.Please Try Again.")
-        bot.register_next_step_handler(ver_code, verifie_am)
 
 @bot.message_handler(state="*", text=["❌ ሰርዝ", "❌ Cancel"], joined=True, not_banned=True)
 def cancel_feedback(msg):
@@ -282,10 +219,6 @@ def english_button(msg):
     lang = user_lang(user_id)
     if not lang == 'en':return
 
-    if not is_verified(user_id):
-        bot.send_message(user_id, "First send us your phone number through bellow button and register!",
-                         reply_markup=en_phone())
-        return
     cur.execute(
             "SELECT first_name, joined_date,phone_number,gender,username,bio,lang FROM students WHERE user_id = %s",
         (user_id,))
@@ -329,9 +262,6 @@ def amharic_button(msg: types.Message):
     user_id = msg.chat.id
     conn = connection()
     cur = conn.cursor(buffered=True)
-    if not is_verified(user_id):
-        bot.send_message(user_id, "በቅድሚያ ስልክ ቁጥሮን በመላክ መዝገባ ያከናውኑ!", reply_markup=am_phone())
-        return
     lang = user_lang(user_id)
     if not lang == 'am': return
     cur.execute("SELECT first_name,joined_date,phone_number,gender,username,bio FROM students "
@@ -424,14 +354,14 @@ def get_user(call: types.CallbackQuery):
     elif text == 'show':
         bot.answer_callback_query(call.id)
         cur.execute(
-            "SELECT first_name, joined_date, phone_number, gender, username, bio, status FROM students "
+            "SELECT first_name, joined_date, gender, username, bio, status FROM students "
             "WHERE user_id  = %s", (user_id,))
         user = cur.fetchone()
-        name, jd, phone, gend, us, bio, stat = user
+        name, jd, gend, us, bio, stat = user
 
         if not gend: gend = ""
         get = bot.get_chat(user_id)
-        bot.send_message(call.message.chat.id, f"<b>Name:</b> {name} {gend}\n<b>Phone:</b> {phone}\n"+
+        bot.send_message(call.message.chat.id, f"<b>Name:</b> {name} {gend}\n"+
                                             f"<b>Username:</b> {us}\n<b>Bio:</b> {bio}\n"+
                                             f"<b>status:</b> {stat}\n"+
                                             f"mention: <a href='tg://user?id={user_id}'>{name}</a>\n"+
@@ -1701,27 +1631,46 @@ def withdraw_money(call):
     else:
         text = "How many Birr do you want to Withdraw?"
     bot.edit_message_text(text, user_id, call.message.message_id, reply_markup=amounts(lang))
-        
+ 
+@bot.message_handler(content_types=['contact'], joined=True, not_banned=True)
+def register_phone(msg):
+    conn = connection()
+    cur = conn.cursor(buffered=True)
+    phone_number = msg.contact.phone_number
+    user_id = msg.chat.id
+    if not is_verified(user_id):
+          db.update_phone(user_id, phone_number)
+          lang = user_lang(user_id)
+          if lang == 'am':
+              text = "ምን ያህል ብር ማዉጣት ይፈልጋሉ ?"
+          else:
+              text = "How many Birr do you want to Withdraw?"
+          bot.edit_message_text(text, user_id, call.message.message_id, reply_markup=amounts(lang))
+          
 @bot.callback_query_handler(func=lambda call: re.search('birr$|^backwithdr$', call.data), joined=True, not_banned=True)
 def cashout_or_ignore(call):
     conn = connection()
     cur = conn.cursor(buffered=True)
     user_id = call.from_user.id
     cur = conn.cursor()
-    cur.execute('select balance,lang,withdraw from students where user_id = %s', (user_id,))
-    balance, lang, withdr = cur.fetchone()
+    cur.execute('select balance,lang,withdraw, phone from students where user_id = %s', (user_id,))
+    balance, lang, withdr, phone = cur.fetchone()
     money = call.data.split('-')[0]
     money = ''.join(money)
     if call.data.endswith('birr'):
+        
         if balance >= int(money):
-
+            if phone is None:
+                bot.send_message(user_id, "Share us your phone", reply_markup=en_phone())
+                bot.delete_message(user_id, call.message.message_id)
+                return
             try:
                 db.withdraw(user_id, money)
             except:
                 raise
-
+            
             if lang == 'en':
-                bot.answer_callback_query(call.id, "We will send soon your withdrawal Money.")
+                bot.answer_callback_query(call.id, "We will send  your withdrawal Money.")
             elif lang == 'am':
                 bot.answer_callback_query(call.id, "ወጪ ያረጉትን ገንዘብ በ 24 ሰአት ጊዜ ውስጥ እንልክሎታለን።")
 
@@ -1744,6 +1693,7 @@ lang, gender, balance FROM students WHERE user_id = %s""", (user_id,))
             elif lang == 'am':
                 bot.answer_callback_query(call.id, "ይቅርታ የጠየቁት ገንዘብ አሁን ካሎት ገንዘብ በላይ ነው ።", show_alert=True)
     else:
+        
         cur.execute('select invitation_link,invites,balance, withdraw, bbalance from students join '
                            'bot_setting where user_id = %s', (user_id,))
         link, invites, balance, withdr, bbl = cur.fetchone()
