@@ -1653,7 +1653,7 @@ def cashout_or_ignore(call):
     cur = conn.cursor(buffered=True)
     user_id = call.from_user.id
     cur = conn.cursor()
-    cur.execute('select balance,lang,withdraw, phone from students where user_id = %s', (user_id,))
+    cur.execute('select balance,lang,withdraw, phone_number from students where user_id = %s', (user_id,))
     balance, lang, withdr, phone = cur.fetchone()
     money = call.data.split('-')[0]
     money = ''.join(money)
