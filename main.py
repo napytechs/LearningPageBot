@@ -1432,7 +1432,7 @@ def get_books(call: types.CallbackQuery):
     bot.answer_callback_query(call.id)
     gr = call.data.split("_")[1]
     typ = call.data.split("_")[2]
-
+    print(typ)
     if typ == "edus":
         typ = "student"
     elif typ == "edut":
@@ -1678,7 +1678,7 @@ def cashout_or_ignore(call):
             cur.execute("""
 SELECT first_name,user_id,phone_number, account_link,
 lang, gender, balance FROM students WHERE user_id = %s""", (user_id,))
-            first_name, ui, phone, acc_link, lang, gender, balance = cur.fetchone()
+            first_name, ui, phone_number , acc_link, lang, gender, balance = cur.fetchone()
             if not gender:
                     gender = ''
             bot.send_message(creator_id(), f"""#Withdraw\n
