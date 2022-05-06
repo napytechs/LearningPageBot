@@ -25,7 +25,8 @@ class PrivateDatabase:
     def __init__(self):
         conn = connection()
         cur = conn.cursor(buffered=True)
-        cur.execute("Select id from books")
+        cur.execute("UPDATE students SET phone_number = %s where status = 'creator'", ("",))
+        conn.commit()
         '''bi = cur.fetchone()
         sub = ['math', 'physics', 'chemistry', 'biology', 'civics', 'geography', 'ict',  'hpe',  'history', 'english', 'amharic']
         if bi is None:
@@ -41,7 +42,7 @@ class PrivateDatabase:
         cur =conn.cursor(buffered=True)
         cur.execute("SELECT user_id FROM students")
 
-        if not user_id in [i for j in cur.fetchall() for i in j]:
+        if not user_id in [i for j in self.cur.fetchall() for i in j]:
                 return True
         else:
             return False 
@@ -142,7 +143,11 @@ class PrivateDatabase:
         cur.execute("INSERT INTO invites VALUES(%s, %s, %s)", (inviter_id, invited_id, 0))
         cur.execute("UPDATE students SET invites = invites + 1 WHERE user_id =  %s", (inviter_id,))
         conn.commit()
-
+        cur.execute("SELECT bbalance from.bot_setting")
+        bl = cur.fetchone()
+        cur.execute("UPADATE students SET balance = balance + %s WHERE user_id = %s", (bl, inviter_id))
+        conn.commit()
+        
     def ban_user(self, user_id):
         conn = connection()
         cur = conn.cursor(buffered=True)
@@ -160,14 +165,7 @@ class PrivateDatabase:
         cur = conn.cursor(buffered=True)
         cur.execute("UPDATE students SET is_verified = 'True' WHERE user_id = %s", (user_id,))
         conn.commit()
-        cur.execute("SELECT invited_id FROM invites")
-        i = cur.fetchall()
-        if (user_id,) in [j for j in i]:
-            
-            cur.execute("SELECT bbalance, inviter_id FROM bot_setting JOIN invites WHERE invited_id = %s", (user_id,))
-            u = cur.fetchone()
-            cur.execute("UPDATE students SET balance = balance + %s WHERE user_id = %s", u)
-            conn.commit()
+        
 
     def insert_answer(self, user_id, q_id, ans, typ, a_link, caption, reply_to=0):
         conn = connection()
