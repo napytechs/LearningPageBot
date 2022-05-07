@@ -1,4 +1,4 @@
-from mysql import connector
+9from mysql import connector
 import os
 
 def connection():
@@ -140,7 +140,7 @@ class PrivateDatabase:
     def update_invite(self, inviter_id, invited_id):
         conn = connection()
         cur = conn.cursor(buffered=True)
-        cur.execute("INSERT INTO invites VALUES(%s, %s, %s)", (inviter_id, invited_id, 0))
+        cur.execute("INSERT INTO invites VALUES(%s, %s)", (inviter_id, invited_id))
         cur.execute("UPDATE students SET invites = invites + 1 WHERE user_id =  %s", (inviter_id,))
         conn.commit()
         cur.execute("SELECT bbalance from.bot_setting")
