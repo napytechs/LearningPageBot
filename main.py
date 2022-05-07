@@ -544,9 +544,10 @@ def channel_text():
         channels = '{}'
    
     channels = json.loads(channels)
-    chan = [bot.get_chat(c) for c in channels if c]
+    chan = [bot.get_chat(c) for c in channels if channels]
     ch = ["@"+c.username for c in chan]
     chan = '\n'.join(ch)
+    print(chan)
     key = [key for key, val in channels.items()]
     key = [bot.get_chat(k) for k in key]
     ukey = {k.username: {'callback_data': "channel:" + str(k.id)} for k in key}
@@ -564,7 +565,7 @@ def admin_text():
         admins = '{}'
     admins = json.loads(admins)
     ad = [bot.get_chat(c) for c in admins]
-    ad = [chaneel.first_name for channel in ad]
+    ad = [channel.first_name for channel in ad]
     ad = '\n'.join(ad)
     key = [bot.get_chat(key) for key in admins]
 
@@ -2291,7 +2292,7 @@ def main():
     bot.enable_saving_states()
     t1 = threading.Thread(target=forever)
     t1.start()
-    bot.infinity_polling()
+    bot.infinity_polling(skip_pending=False)
   
 if __name__ == "__main__": 
     while 1: 
