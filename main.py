@@ -36,8 +36,6 @@ TOKEN = "5111958751:AAHZtj0vrkqmaNWXuAokdjBE-CT19pUvY9A"
 bot = TeleBot(TOKEN)
 
 DEEPLINK = 'https://telegram.me/'+bot.get_me().username+'?start='
-
-list_codes = {}
 markups = {}
 
 class AskQuestion(StatesGroup):
