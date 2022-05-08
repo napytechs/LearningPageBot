@@ -1,4 +1,4 @@
-9from mysql import connector
+from mysql import connector
 import os
 
 def connection():
