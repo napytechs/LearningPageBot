@@ -2182,7 +2182,7 @@ def browse(msg, ids):
     print(user_id, msg)
     data = []
     ujson_msg_id = {}
-    if is_verified(msg.chat.id):
+    if 1:
         showed = False
         cur.execute("""
                 SELECT Questions.question,Questions.type_q,Questions.caption,Questions.subject,
