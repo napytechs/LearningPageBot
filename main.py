@@ -1385,7 +1385,7 @@ def send_answer(call: types.CallbackQuery):
         cur.execute("DELETE FROM Answers WHERE answer_id = %s", (ans_id,))
         conn.commit()
         start_message(call.message)
-
+    bot.delete_state (call.message.chat.id)
 @bot.callback_query_handler(func=lambda call: re.match(r'^areply', call.data))
 def reply_to_answer(call: types.CallbackQuery):
     conn = connection()
