@@ -535,6 +535,8 @@ def on_send_btn(msg: types.Message):
         bot.reply_to(msg, "error")
 
 def channel_text():
+    conn = connection()
+    cur = conn.cursor(buffered=True)
     try:
         cur.execute("SELECT channels FROM bot_setting")
         channels = cur.fetchone()[0]
@@ -545,7 +547,7 @@ def channel_text():
     chan = [bot.get_chat(c) for c in channels if channels]
     ch = ["@"+c.username for c in chan]
     chan = '\n'.join(ch)
-    print(chan)
+    #print(chan)
     key = [key for key, val in channels.items()]
     key = [bot.get_chat(k) for k in key]
     ukey = {k.username: {'callback_data': "channel:" + str(k.id)} for k in key}
