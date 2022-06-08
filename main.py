@@ -73,7 +73,7 @@ def start_message(msg):
         if user_id == ADMIN_ID: status = "creator"
         else: status = "member"
         db.save_data("Student", user_id, date, inv_link, 0, lang, acc_link, "False", status)
-    cur = db.select_query.execute('SELECT admins FROM bot_setting')
+    cur = db.select_query('SELECT admins FROM bot_setting')
     ui = cur.fetchone()
     print(ui)
     if ui:
@@ -119,7 +119,7 @@ def start_(msg: types.Message):
         if db.user_is_not_exist(msg.from_user.id):
             start_message(msg)
             return
-        cur = db.select_queryexecute("SELECT question_id FROM Questions WHERE browse_link = %s", text)
+        cur = db.select_query("SELECT question_id FROM Questions WHERE browse_link = %s", text)
         ids = cur.fetchone()[0]
         target = threading.Thread(target=browse, args=(msg, ids))
         target.start()
