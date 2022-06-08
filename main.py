@@ -75,6 +75,7 @@ def start_message(msg):
         db.save_data("Student", user_id, date, inv_link, 0, lang, acc_link, "False", status)
     cur = db.select_query.execute('SELECT admins FROM bot_setting')
     ui = cur.fetchone()
+    print(ui)
     if ui:
         try:
             kwargs = json.loads(ui[0])
