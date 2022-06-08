@@ -96,15 +96,13 @@ def start_message(msg):
 @bot.message_handler(commands=['start'], is_deeplink=True, chat_types=["private"], not_banned=True)
 def start_(msg: types.Message):
     text = msg.text.split()[1]
-    al = db.select_query("SELECT account_link FROM students")
-    .fetchall()
+    al = db.select_query("SELECT account_link FROM students").fetchall()
     account_link = [link for links in  al for link in links]
-    bl = db.select_query("SELECT browse_link FROM Questions")
-    .fetchall()
+    bl = db.select_query("SELECT browse_link FROM Questions").fetchall()
     browse_link = [ui for ux in bl for ui in ux]
     il = db.select_query("SELECT invitation_link FROM students").fetchall()
     invitation_link = [link for links in il for link in links]
-    que =  db.select_query("SELECT question_link FROM Questions")r.fetchall()
+    que =  db.select_query("SELECT question_link FROM Questions").fetchall()
     questions = [q for qu in que for q in qu]
     if text == 'start':
         start_message(msg)
