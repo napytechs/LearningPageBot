@@ -63,8 +63,6 @@ class OnMessage(StatesGroup):
     
 @bot.message_handler(commands=['start'], chat_types=['private'], is_deeplink=False, joined=True, not_banned=True)
 def start_message(msg):
-    conn = connection()
-    cur = conn.cursor(buffered=True)
     user_id = msg.chat.id
     date = time()
     inv_link = generator.invite_link(user_id)
@@ -75,7 +73,7 @@ def start_message(msg):
         if user_id == ADMIN_ID: status = "creator"
         else: status = "member"
         db.save_data("Student", user_id, date, inv_link, 0, lang, acc_link, "False", status)
-    cur.execute('SELECT admins FROM bot_setting')
+    cur = db.select_query.execute('SELECT admins FROM bot_setting')
     ui = cur.fetchone()
     if ui:
         try:
@@ -97,20 +95,16 @@ def start_message(msg):
 
 @bot.message_handler(commands=['start'], is_deeplink=True, chat_types=["private"], not_banned=True)
 def start_(msg: types.Message):
-    conn = connection()
-    cur = conn.cursor(buffered=True)
     text = msg.text.split()[1]
-    cur.execute("SELECT account_link FROM students")
-    al = cur.fetchall()
+    al = db.select_query("SELECT account_link FROM students")
+    .fetchall()
     account_link = [link for links in  al for link in links]
-    cur.execute("SELECT browse_link FROM Questions")
-    bl = cur.fetchall()
+    bl = db.select_query("SELECT browse_link FROM Questions")
+    .fetchall()
     browse_link = [ui for ux in bl for ui in ux]
-    cur.execute("SELECT invitation_link FROM students")
-    il = cur.fetchall()
+    il = db.select_query("SELECT invitation_link FROM students").fetchall()
     invitation_link = [link for links in il for link in links]
-    cur.execute("SELECT question_link FROM Questions")
-    que = cur.fetchall()
+    que =  db.select_query("SELECT question_link FROM Questions")r.fetchall()
     questions = [q for qu in que for q in qu]
     if text == 'start':
         start_message(msg)
@@ -126,14 +120,14 @@ def start_(msg: types.Message):
         if db.user_is_not_exist(msg.from_user.id):
             start_message(msg)
             return
-        cur.execute("SELECT question_id FROM Questions WHERE browse_link = %s", (text,))
+        cur = db.select_queryexecute("SELECT question_id FROM Questions WHERE browse_link = %s", text)
         ids = cur.fetchone()[0]
         target = threading.Thread(target=browse, args=(msg, ids))
         target.start()
         target.join()
 
     elif text in invitation_link:
-        cur.execute("SELECT user_id FROM students WHERE invitation_link = %s", (text,))
+        cur = db.select_query("SELECT user_id FROM students WHERE invitation_link = %s", text)
         user_via_link(msg, cur.fetchone()[0])
 
     elif text in questions:
@@ -142,7 +136,7 @@ def start_(msg: types.Message):
             start_message(msg)
             return
 
-        cur.execute("SELECT question_id  FROM Questions WHERE question_link = %s", (text,))
+        cur = db.select_query("SELECT question_id  FROM Questions WHERE question_link = %s", text)
         q_id = cur.fetchone()[0]
         lang = user_lang(msg.from_user.id)
         bot.send_message(msg.from_user.id, "<code>Send your answer through Text, Voice or Media(photo, video)</code>",
@@ -2300,4 +2294,4 @@ if __name__ == "__main__":
             print("Poling started");
             main()
         except Exception as e:print(e)
-    print("Stopped")
+    
