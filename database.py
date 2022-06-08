@@ -125,7 +125,7 @@ class PrivateDatabase:
         
     def update_invite(self, inviter_id, invited_id):
         self.update_query("INSERT INTO invites VALUES(%s, %s)", inviter_id, invited_id)
-        self.update_query("UPDATE students SET invites = invites + 1 WHERE user_id =  %s", (inviter_id,))
+        self.update_query("UPDATE students SET invites = invites + 1 WHERE user_id =  %s", inviter_id)
         
         cur = self.select_query("SELECT bbalance from bot_setting")
         bl = cur.fetchone()
@@ -135,7 +135,7 @@ class PrivateDatabase:
         self.update_query("UPDATE students SET status = 'banned' WHERE user_id = %s", user_id)
 
     def unban_user(self, user_id):
-        self.update_query("UPDATE students SET status = 'member' WHERE user_id = %s", user_id
+        self.update_query("UPDATE students SET status = 'member' WHERE user_id = %s", user_id)
         
     def set_verifie(self, user_id):
         self.update_query("UPDATE students SET is_verified = 'True' WHERE user_id = %s", user_id)
