@@ -31,7 +31,7 @@ apihelper.ENABLE_MIDDLEWARE = True
 db = PrivateDatabase()
 ADMIN_ID = 5213764043
 CHANNEL_ID = -1001793167733
-TOKEN = "5111958751:AAHZtj0vrkqmaNWXuAokdjBE-CT19pUvY9A"
+TOKEN = "5111958751:AAGBj4pnqHvTh6iRX3rlsrE2AyAsbmssc28"
 
 bot = TeleBot(TOKEN)
 
@@ -2185,7 +2185,7 @@ def browse(msg, ids):
             data.extend(ui)
             if not data[6]:
                 data[6] = ""
-        print(data)
+       
         q, tq, c, sub, first, gend, acc = data
         data.clear()
         btn = types.InlineKeyboardMarkup()
