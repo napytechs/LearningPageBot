@@ -10,6 +10,7 @@ from typing import  Union
 import schedule
 from time import time
 import threading
+import flask
 from system import *
 from time_convertor import time_parse as tp
 from telebot.custom_filters import *
@@ -35,6 +36,17 @@ TOKEN = "5111958751:AAGBj4pnqHvTh6iRX3rlsrE2AyAsbmssc28"
 
 bot = TeleBot(TOKEN)
 
+WEBHOOK_HOST = 'https://learningpagebot-production-4d0e.up.railway.app/'
+WEBHOOK_PORT = 8443  
+WEBHOOK_LISTEN = '0.0.0.0'  
+WEBHOOK_SSL_CERT = './webhook_cert.pem'  
+WEBHOOK_SSL_PRIV = './webhook_pkey.pem'  
+
+WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
+WEBHOOK_URL_PATH = "/%s/" % (TOKEN)
+
+
+app = flask.Flask(__name__)
 DEEPLINK = 'https://telegram.me/'+bot.get_me().username+'?start='
 markups = {}
 
@@ -2270,6 +2282,30 @@ def forever():
     while 1:
         schedule.run_pending()
 
+@app.route('/', methods=['GET', 'HEAD'])
+def index():
+    return ''
+
+
+# Process webhook calls
+@app.route(WEBHOOK_URL_PATH, methods=['POST'])
+def webhook():
+    if flask.request.headers.get('content-type') == 'application/json':
+        json_string = flask.request.get_data().decode('utf-8')
+        update = types.Update.de_json(json_string)
+        bot.process_new_updates([update])
+        return ''
+    else:
+        flask.abort(403)
+
+
+bot.remove_webhook()
+
+time.sleep(0.1)
+
+bot.set_webhook(url=WEBHOOK_URL_BASE + WEBHOOK_URL_PATH,
+                certificate=open(WEBHOOK_SSL_CERT, 'r'))
+
 def main():
     bot.add_custom_filter(ChatFilter())
     bot.add_custom_filter(IsDigitFilter())
@@ -2285,8 +2321,10 @@ def main():
     bot.enable_saving_states()
     t1 = threading.Thread(target=forever)
     t1.start()
-    bot.infinity_polling(skip_pending=False)
-  
+    app.run(host=WEBHOOK_LISTEN,
+        port=WEBHOOK_PORT,
+        ssl_context=(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV),
+        debug=True)
 if __name__ == "__main__": 
     while 1: 
         try:
