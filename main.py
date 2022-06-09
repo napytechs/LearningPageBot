@@ -8,9 +8,9 @@ from buttons import *
 from database import *
 from typing import  Union
 import schedule
-from time import time, sleep
+from time import time
 import threading
-import flask
+from flask import Flask, request
 from system import *
 from time_convertor import time_parse as tp
 from telebot.custom_filters import *
@@ -28,7 +28,7 @@ try:
 except:
     import json
 apihelper.ENABLE_MIDDLEWARE = True
-
+app = Flask(__name__)
 db = PrivateDatabase()
 ADMIN_ID = 5213764043
 CHANNEL_ID = -1001793167733
@@ -36,17 +36,6 @@ TOKEN = "5111958751:AAGBj4pnqHvTh6iRX3rlsrE2AyAsbmssc28"
 
 bot = TeleBot(TOKEN)
 
-WEBHOOK_HOST = 'https://learningpagebot-production-4d0e.up.railway.app/'
-WEBHOOK_PORT = 8443  
-WEBHOOK_LISTEN = '0.0.0.0'  
-WEBHOOK_SSL_CERT = './webhook_cert.pem'  
-WEBHOOK_SSL_PRIV = './webhook_pkey.pem'  
-
-WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
-WEBHOOK_URL_PATH = "/%s/" % (TOKEN)
-
-
-app = flask.Flask(__name__)
 DEEPLINK = 'https://telegram.me/'+bot.get_me().username+'?start='
 markups = {}
 
@@ -2277,34 +2266,25 @@ def send_to_users(call: types.CallbackQuery):
         except Exception as e:
             continue
 
+
 def forever():
     schedule.every(12).hours.do(user_not_joined)
     while 1:
         schedule.run_pending()
 
-@app.route('/', methods=['GET', 'HEAD'])
-def index():
-    return ''
+@app.route('/' + TOKEN, methods=['POST'])
+def getMessage():
+    json_string = request.get_data().decode('utf-8')
+    update = types.Update.de_json(json_string)
+    bot.process_new_updates([update])
+    return "!", 200
 
 
-# Process webhook calls
-@app.route(WEBHOOK_URL_PATH, methods=['POST'])
+@app.route("/")
 def webhook():
-    if flask.request.headers.get('content-type') == 'application/json':
-        json_string = flask.request.get_data().decode('utf-8')
-        update = types.Update.de_json(json_string)
-        bot.process_new_updates([update])
-        return ''
-    else:
-        flask.abort(403)
-
-
-bot.remove_webhook()
-
-sleep(0.1)
-
-bot.set_webhook(url=WEBHOOK_URL_BASE + WEBHOOK_URL_PATH,
-                certificate=open(WEBHOOK_SSL_CERT, 'r'))
+    bot.remove_webhook()
+    bot.set_webhook(url='https://learningpagebot-production-4d0e.up.railway.app/' + TOKEN)
+    return "!", 200
 
 def main():
     bot.add_custom_filter(ChatFilter())
@@ -2321,10 +2301,7 @@ def main():
     bot.enable_saving_states()
     t1 = threading.Thread(target=forever)
     t1.start()
-    app.run(host=WEBHOOK_LISTEN,
-        port=WEBHOOK_PORT,
-        ssl_context=(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV),
-        debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
 if __name__ == "__main__": 
     while 1: 
         try:
