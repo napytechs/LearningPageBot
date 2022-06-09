@@ -8,7 +8,7 @@ from buttons import *
 from database import *
 from typing import  Union
 import schedule
-from time import time
+from time import time, sleep
 import threading
 import flask
 from system import *
@@ -2301,7 +2301,7 @@ def webhook():
 
 bot.remove_webhook()
 
-time.sleep(0.1)
+sleep(0.1)
 
 bot.set_webhook(url=WEBHOOK_URL_BASE + WEBHOOK_URL_PATH,
                 certificate=open(WEBHOOK_SSL_CERT, 'r'))
