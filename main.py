@@ -2276,7 +2276,8 @@ def forever():
 def getMessage():
     json_string = request.get_data().decode('utf-8')
     update = types.Update.de_json(json_string)
-    bot.process_new_updates([update])
+    poress = threading.Thread(target=bot.process_new_updates, arg=([update],))
+    poress.start()
     return "!", 200
 
 
@@ -2301,8 +2302,8 @@ def main():
     bot.enable_saving_states()
     t1 = threading.Thread(target=forever)
     t1.start()
-    run = threading.Thread(target=app.run)
-    run.start()
+    app.run(host="0.0.0.0")
+    
     
 if __name__ == "__main__": 
     thread = threading.Thread(target=main)
