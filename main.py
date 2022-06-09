@@ -2303,9 +2303,5 @@ def main():
     t1.start()
     app.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
 if __name__ == "__main__": 
-    while 1: 
-        try:
-            print("Poling started");
-            main()
-        except Exception as e:print(e)
-    
+    thread = threading.Thread(target=main)
+    thread.start()
