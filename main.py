@@ -2301,7 +2301,9 @@ def main():
     bot.enable_saving_states()
     t1 = threading.Thread(target=forever)
     t1.start()
-    app.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
+    run = threading.Thread(target=app.run)
+    run.start()
+    
 if __name__ == "__main__": 
     thread = threading.Thread(target=main)
     thread.start()
