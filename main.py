@@ -67,7 +67,7 @@ def start_message(msg):
     user_id = msg.chat.id
     if db.user_is_not_exist(user_id):
         date = time()
-        inv _link = generator.invite_link(user_id)
+        inv_link = generator.invite_link(user_id)
         lang = 'empity'
         acc_link = generator.account_link()
         if user_id == ADMIN_ID: status = "creator"
