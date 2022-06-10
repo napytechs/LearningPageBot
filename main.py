@@ -62,21 +62,20 @@ class OnMessage(StatesGroup):
     to_user = State()
 
     
-@bot.message_handler(commands=['start'], chat_types=['private'], is_deeplink=False, joined=True, not_banned=True)
+@bot.message_handler(commands=['start'], chat_types=['private'], is_deeplink=False, not_banned=True)
 def start_message(msg):
     user_id = msg.chat.id
-    date = time()
-    inv_link = generator.invite_link(user_id)
-    lang = 'empity'
-    acc_link = generator.account_link()
-
     if db.user_is_not_exist(user_id):
+        date = time()
+        inv _link = generator.invite_link(user_id)
+        lang = 'empity'
+        acc_link = generator.account_link()
         if user_id == ADMIN_ID: status = "creator"
         else: status = "member"
         db.save_data("Student", user_id, date, inv_link, 0, lang, acc_link, "False", status)
     cur = db.select_query('SELECT admins FROM bot_setting')
     ui = cur.fetchone()
-    print(ui)
+    
     if ui:
         try:
             kwargs = json.loads(ui[0])
@@ -178,7 +177,7 @@ def free_user(msg: types.Message):
         except Exception:
             bot.send_message(msg.chat.id, "User not found..." )
 
-@bot.callback_query_handler(func=lambda call: call.data in ['am', 'en'], joined=True, not_banned=True)
+@bot.callback_query_handler(func=lambda call: call.data in ['am', 'en'], not_banned=True)
 def update_user_language(call: types.CallbackQuery):
     user_id = call.message.chat.id
     conn = connection()
@@ -2276,7 +2275,8 @@ def forever():
 def getMessage():
     json_string = request.get_data().decode('utf-8')
     update = types.Update.de_json(json_string)
-    bot.process_new_updates([update])
+    thrade = threading.Thread(target=bot.process_new_updates, args=([update],))
+    thrade.start()
     return "!", 200
 
 
