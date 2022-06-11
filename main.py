@@ -288,7 +288,7 @@ SELECT invitation_link, invites, balance, bbalance, withdraw FROM students JOIN 
     elif msg.text == "💬 አስታየት":
         bot.send_message(user_id, "<code>ያሎትን ሃሳብ ወይም አስታየት ይላኩ።</code>",
                          reply_markup=cancel(lang), parse_mode="html")
-        bot.set_state(user_id, AskQuestion.question)
+        bot.set_state(user_id, Feedback.Text)
 
 
 @bot.message_handler(not_banned=False, chat_types=['private'])
@@ -2098,15 +2098,16 @@ def user_via_link(msg, text):
         if not gend:
             gend = ''
         try:
+            db.update_invite(text, msg.chat.id)
+            
             bot.send_message(msg.chat.id, f"You were invited by {first} {gend}")
+            start_message(msg)
             bot.send_message(text, f"User {util.user_link(msg.from_user)} was Joined by your invitational link",
                              parse_mode='html')
+        
         except ApiTelegramException:
             pass
-        finally:
-            db.update_invite(text, msg.chat.id)
-            start_message(msg)
-
+        
     else:
         start_message(msg)
 
