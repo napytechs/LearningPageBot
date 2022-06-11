@@ -93,7 +93,7 @@ def start_message(msg):
     else:
         bot.send_message(msg.chat.id, "_Select Language / ቋንቋ ይምረጡ_", reply_markup=language_btn(),
                              parse_mode="Markdown")
-'''
+
 @bot.message_handler(commands=['start'], is_deeplink=True, chat_types=["private"], not_banned=True)
 def start_(msg: types.Message):
     text = msg.text.split()[1]
@@ -176,7 +176,7 @@ def free_user(msg: types.Message):
 
         except Exception:
             bot.send_message(msg.chat.id, "User not found..." )
-
+'''
 @bot.callback_query_handler(func=lambda call: call.data in ['am', 'en'], not_banned=True)
 def update_user_language(call: types.CallbackQuery):
     user_id = call.message.chat.id
