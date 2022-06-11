@@ -128,8 +128,8 @@ class PrivateDatabase:
         self.update_query("UPDATE students SET invites = invites + 1 WHERE user_id =  %s", inviter_id)
         
         cur = self.select_query("SELECT bbalance from bot_setting")
-        bl = cur.fetchone()
-        self.update_query("UPADATE students SET balance = balance + %s WHERE user_id = %s", bl, inviter_id)
+        bl = cur.fetchone()[0]
+        self.update_balance(inviter_id, bl)
         
     def ban_user(self, user_id):
         self.update_query("UPDATE students SET status = 'banned' WHERE user_id = %s", user_id)
