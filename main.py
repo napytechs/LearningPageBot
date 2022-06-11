@@ -2016,7 +2016,7 @@ def gender_edit(call):
         bot.edit_message_text(textp, user_id, call.message.message_id, reply_markup=edit_profile(user_id, lang))
     else:
         user_profile(call)
-'''
+
 def user_not_joined():
     conn = connection()
     cur = conn.cursor(buffered=True)
@@ -2270,7 +2270,7 @@ def forever():
     schedule.every(12).hours.do(user_not_joined)
     while 1:
         schedule.run_pending()
-'''
+
 @app.route('/' + TOKEN, methods=['POST'])
 def getMessage():
     json_string = request.get_data().decode('utf-8')
