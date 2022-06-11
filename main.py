@@ -27,7 +27,7 @@ try:
     import de_json as json
 except:
     import json
-apihelper.ENABLE_MIDDLEWARE = True
+#apihelper.ENABLE_MIDDLEWARE = True
 app = Flask(__name__)
 db = PrivateDatabase()
 ADMIN_ID = 5213764043
@@ -308,7 +308,7 @@ def join_channel_message(msg: Union[types.Message, types.CallbackQuery]):
             if not bot.get_chat_member(channel, user_id).is_member:
                 username+="@"+bot.get_chat(channel).username+"\n"
     bot.send_message(user_id, f"✳ Dear user first you need to join our channels!\n{username}")
-'''
+
 @bot.callback_query_handler(func=lambda call:True, not_banned=False)
 def call_banned(call: types.CallbackQuery):
     bot.answer_callback_query(call.id)
@@ -503,7 +503,7 @@ def on_got_message(call: types.CallbackQuery):
     
     elif c == 'done':
         send_to_users(call)
-        
+'''        
 @bot.message_handler(state=OnMessage.add_btn)
 def on_send_btn(msg: types.Message):
     text = msg.text
