@@ -1305,7 +1305,7 @@ def on_preview_answer(msg: types.Message):
 
     bot.send_message(user_id, "When you finish previewing your answer press once submit!")
     start_message(msg)
-'''
+
 @bot.callback_query_handler(func=lambda c: re.search("^(Send|Edit|Del)Answer", c.data), joined=True, not_banned=True)
 def send_answer(call: types.CallbackQuery):
     user_id = call.message.chat.id
@@ -2016,7 +2016,7 @@ def gender_edit(call):
         bot.edit_message_text(textp, user_id, call.message.message_id, reply_markup=edit_profile(user_id, lang))
     else:
         user_profile(call)
-
+'''
 def user_not_joined():
     conn = connection()
     cur = conn.cursor(buffered=True)
