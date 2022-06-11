@@ -223,8 +223,8 @@ def english_button(msg):
         bot.send_message(user_id, "<i>Select Book Type</i>", parse_mode='HTMl', reply_markup=types_book_am())
 
     if msg.text == "👨‍👩‍👦‍👦 Invite":
-        cur.execute('''
-SELECT invitation_link, invites, balance, withdraw, bbalance FROM students join bot_setting WHERE user_id = %s''',
+        cur.execute("""
+SELECT invitation_link, invites, balance, withdraw, bbalance FROM students join bot_setting WHERE user_id = %s""",
                            (user_id,))
         link, invites, balance, withdr, bbl = cur.fetchone()
         bot.send_message(user_id, BalanceText['en'].format(balance, withdr, invites, bbl, DEEPLINK + link),
@@ -265,8 +265,8 @@ def amharic_button(msg: types.Message):
         bot.send_message(msg.chat.id, "_የመጽሃፍ አይነት ይምረጡ_", parse_mode="Markdown", reply_markup=types_book_am())
 
     elif msg.text == "👨‍👩‍👦‍👦 ጋብዝ":
-        cur.execute('''
-SELECT invitation_link, invites, balance, bbalance, withdraw FROM students JOIN bot_setting WHERE user_id = %s''',
+        cur.execute("""
+SELECT invitation_link, invites, balance, bbalance, withdraw FROM students JOIN bot_setting WHERE user_id = %s""",
                            (user_id,))
         link, invites, balance, withdr, bbl = cur.fetchone()
         bot.send_message(user_id, BalanceText['am'].format(balance, invites, withdr, bbl, DEEPLINK+link),
