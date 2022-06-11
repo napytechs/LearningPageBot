@@ -696,7 +696,7 @@ def channel_permision(channel_id):
     text = CHANNELP.format(channel.username, *per)
     btn = channel_btn(channel_id, **ujson)
     return text, btn
-'''
+
 @bot.message_handler(state=BotSetting.admin, content_types=util.content_type_media, is_digit=True)
 def add_admin(msg: types.Message):
     user_id = msg.from_user.id
@@ -1305,7 +1305,7 @@ def on_preview_answer(msg: types.Message):
 
     bot.send_message(user_id, "When you finish previewing your answer press once submit!")
     start_message(msg)
-
+'''
 @bot.callback_query_handler(func=lambda c: re.search("^(Send|Edit|Del)Answer", c.data), joined=True, not_banned=True)
 def send_answer(call: types.CallbackQuery):
     user_id = call.message.chat.id
