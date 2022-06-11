@@ -176,7 +176,7 @@ def free_user(msg: types.Message):
 
         except Exception:
             bot.send_message(msg.chat.id, "User not found..." )
-'''
+
 @bot.callback_query_handler(func=lambda call: call.data in ['am', 'en'], not_banned=True)
 def update_user_language(call: types.CallbackQuery):
     user_id = call.message.chat.id
@@ -247,7 +247,7 @@ SELECT invitation_link, invites, balance, withdraw, bbalance FROM students join 
     if msg.text == "💬 Feedback":
         bot.send_message(user_id, "Send us your feedback", reply_markup=cancel('en'))
         bot.set_state(user_id, Feedback.Text)
-
+'''
 @bot.message_handler(func=lambda msg: msg.text in am_btns, chat_types=['private'], joined=True, not_banned=True)
 def amharic_button(msg: types.Message):
     user_id = msg.chat.id
