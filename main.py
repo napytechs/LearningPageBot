@@ -93,7 +93,7 @@ def start_message(msg):
     else:
         bot.send_message(msg.chat.id, "_Select Language / ቋንቋ ይምረጡ_", reply_markup=language_btn(),
                              parse_mode="Markdown")
-
+'''
 @bot.message_handler(commands=['start'], is_deeplink=True, chat_types=["private"], not_banned=True)
 def start_(msg: types.Message):
     text = msg.text.split()[1]
@@ -2270,7 +2270,7 @@ def forever():
     schedule.every(12).hours.do(user_not_joined)
     while 1:
         schedule.run_pending()
-
+'''
 @app.route('/' + TOKEN, methods=['POST'])
 def getMessage():
     json_string = request.get_data().decode('utf-8')
@@ -2299,8 +2299,8 @@ def main():
     bot.add_custom_filter(IsDeeplinkFilter())
     bot.add_custom_filter(UserJoinedChannelsFilter(bot))
     bot.enable_saving_states()
-    t1 = threading.Thread(target=forever)
-    t1.start()
+    #t1 = threading.Thread(target=forever)
+    #t1.start()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5555)))
    
     
