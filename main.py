@@ -503,7 +503,7 @@ def on_got_message(call: types.CallbackQuery):
     
     elif c == 'done':
         send_to_users(call)
-'''        
+     
 @bot.message_handler(state=OnMessage.add_btn)
 def on_send_btn(msg: types.Message):
     text = msg.text
@@ -696,7 +696,7 @@ def channel_permision(channel_id):
     text = CHANNELP.format(channel.username, *per)
     btn = channel_btn(channel_id, **ujson)
     return text, btn
-
+'''
 @bot.message_handler(state=BotSetting.admin, content_types=util.content_type_media, is_digit=True)
 def add_admin(msg: types.Message):
     user_id = msg.from_user.id
