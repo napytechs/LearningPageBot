@@ -247,7 +247,7 @@ SELECT invitation_link, invites, balance, withdraw, bbalance FROM students join 
     if msg.text == "💬 Feedback":
         bot.send_message(user_id, "Send us your feedback", reply_markup=cancel('en'))
         bot.set_state(user_id, Feedback.Text)
-'''
+
 @bot.message_handler(func=lambda msg: msg.text in am_btns, chat_types=['private'], joined=True, not_banned=True)
 def amharic_button(msg: types.Message):
     user_id = msg.chat.id
@@ -308,7 +308,7 @@ def join_channel_message(msg: Union[types.Message, types.CallbackQuery]):
             if not bot.get_chat_member(channel, user_id).is_member:
                 username+="@"+bot.get_chat(channel).username+"\n"
     bot.send_message(user_id, f"✳ Dear user first you need to join our channels!\n{username}")
-
+'''
 @bot.callback_query_handler(func=lambda call:True, not_banned=False)
 def call_banned(call: types.CallbackQuery):
     bot.answer_callback_query(call.id)
